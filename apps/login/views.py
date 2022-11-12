@@ -1,20 +1,22 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from py_base_template.decorator import log_resp
 from .serializers import UserSerializer
 from .models import UserModel, DetailModel
 from apps.base_response.api_response import APIResponse
 from .utils import create_token
 import logging
 
-
 # Create your views here.
+logger = logging.getLogger('full_logger')
 
 
 class UserView(APIView):
-
+    @log_resp
     def get(self, request, id):
-        logging.info(msg=f"接收前端查询数据:request:{request.data}-id:{id}")
+        logger.info(msg=f"接收前端查询数据:request:{request.data}-id:{id}")
         user = UserModel.objects.filter(user_id=id).first()
         if user:
             serializer = UserSerializer(instance=user)
@@ -23,6 +25,7 @@ class UserView(APIView):
 
 
 class UsersView(APIView):
+
     def get(self, request):
         users = UserModel.objects.all()
         if users:
@@ -56,7 +59,6 @@ class UsersView(APIView):
             return APIResponse()
         else:
             return APIResponse(data_msg=False, results=serializer.errors, status="5001")
-
 
     def delete(self, request, id):
         if id:

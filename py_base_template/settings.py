@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = 'django-insecure-(+tq6xza1-qx_bz%g33h5%k0@(o!uyjj2yzid^6v)bns_$q=2i
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -74,7 +72,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'py_base_template.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -84,7 +81,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -104,7 +100,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -116,7 +111,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -127,9 +121,83 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# jwt认证
+# jwt认证器全局配置
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+}
+
+# logging配置
+LOG_PATH = BASE_DIR / 'log'
+FILE_NAME = 'django.log'
+LOGGING = {
+    'version': 1,
+    #  disable_existing_loggers 键被设置为 True 则默认配置中的所有记录器都将被禁用
+    'disable_existing_loggers': False,
+    # 日志格式化
+    'formatters': {
+        # 简单模式
+        'simple': {
+            'class': 'logging.Formatter',
+            'format': '%(asctime)s %(levelname)s %(name)s %(filename)s %(module)s %(funcName)s '
+                      '%(lineno)d %(thread)d %(threadName)s %(process)d %(processName)s %(message)s'
+        },
+        # json模式, 方便ELK收集处理
+        'json': {
+            'class': 'logging.Formatter',
+            'format': '{"time:":"%(asctime)s","level":"%(levelname)s","logger_name":"%(name)s",'
+                      '"file_name":"%(filename)s","module":"%(module)s","func_name":"%(funcName)s",'
+                      '"line_number":"%(lineno)d","thread_id":"%(thread)d","thread_name":"%(threadName)s",'
+                      '"process_id":"%(process)d","process_name":"%(processName)s","message":"%(message)s"}'}
+    },
+    # 过滤器
+    # 可对日志数据进一步处理
+    # 处理器
+    'handlers': {
+        # 控制台输出
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'INFO',
+            'formatter': 'simple'
+        },
+        # info文件输出
+        'info_file': {
+            'level': 'INFO',
+            'formatter': 'json',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': '{0}/{1}_info.log'.format(LOG_PATH, FILE_NAME),
+            'when': "d",
+            'interval': 1,
+            'encoding': 'utf8',
+            'backupCount': 30
+
+        },
+        # error文件输出
+        'error_file': {
+            'level': 'ERROR',
+            'formatter': 'json',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': '{0}/{1}_error.log'.format(LOG_PATH, FILE_NAME),
+            'when': "d",
+            'interval': 1,
+            'encoding': 'utf8',
+            'backupCount': 30
+
+        }
+    },
+    # 记录器
+    'loggers': {
+        'full_logger': {
+            'handlers': ['console', 'info_file', 'error_file'],
+            'level': 'INFO'
+        },
+        'only_console_logger': {
+            'handlers': ['console'],
+            'level': 'INFO'
+        },
+        'only_file_logger': {
+            'handlers': ['info_file', 'error_file']
+        }
+    }
 }

@@ -7,6 +7,7 @@ from django.utils.deprecation import MiddlewareMixin
 from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 from .utils import parse_payload
+import logging
 
 CORS_HEADERS = {
     "Access-Control-Allow-Origin": "*",
@@ -16,6 +17,7 @@ CORS_HEADERS = {
 
 
 # 自定义的类一定要继承MiddlewareMixin
+logger = logging.getLogger('full_logger')
 class LoginMiddle(MiddlewareMixin):
     @staticmethod
     def build_cors_resp(http_origin, details, method, code=status.HTTP_400_BAD_REQUEST):
@@ -43,6 +45,7 @@ class LoginMiddle(MiddlewareMixin):
             if not result["status"]:
                 # 响应前端 详细错误信息
                 try:
+                    logger.error("认证未通过")
                     raise AuthenticationFailed("认证未通过")
                 except AuthenticationFailed as e:
                     return self.build_cors_resp("*", str(e), request.method, status.HTTP_401_UNAUTHORIZED)
