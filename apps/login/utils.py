@@ -33,7 +33,6 @@ def parse_payload(token):
     result = {'status': False, 'data': None, 'error': None}
     try:
         verified_payload = jwt.decode(token, key=JWT_SALT, verify=False, algorithms=['HS256'])
-        print(verified_payload)
         result['status'] = True
         result['payload'] = verified_payload
         result['error'] = ''
