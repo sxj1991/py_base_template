@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'apps.login.apps.LoginConfig',
     'apps.base_response.apps.ResponseConfig',
+    'apps.org.apps.OrgConfig',
 ]
 
 MIDDLEWARE = [
