@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from py_base_template.auth import JwtAuthentication
 from py_base_template.decorator import log_resp
 from .serializers import UserSerializer
 from .models import UserModel, DetailModel
@@ -14,13 +15,16 @@ logger = logging.getLogger('full_logger')
 
 
 class UserView(APIView):
+    authentication_classes = [JwtAuthentication, ]
     @log_resp
     def get(self, request, id):
-        logger.info(msg=f"接收前端查询数据:request:{request.data}-id:{id}")
-        user = UserModel.objects.filter(user_id=id).first()
-        if user:
-            serializer = UserSerializer(instance=user)
-            return APIResponse(results=serializer.data)
+        # 获取认证标记
+        if request.auth:
+            logger.info(msg=f"接收前端查询数据:request:{request.data}-id:{id}")
+            user = UserModel.objects.filter(user_id=id).first()
+            if user:
+                serializer = UserSerializer(instance=user)
+                return APIResponse(results=serializer.data)
         return APIResponse(data_msg=False, status="5002")
 
 

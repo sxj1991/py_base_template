@@ -15,9 +15,10 @@ CORS_HEADERS = {
     "Access-Control-Allow-Credentials": "true",
 }
 
-
 # 自定义的类一定要继承MiddlewareMixin
 logger = logging.getLogger('full_logger')
+
+
 class LoginMiddle(MiddlewareMixin):
     @staticmethod
     def build_cors_resp(http_origin, details, method, code=status.HTTP_400_BAD_REQUEST):

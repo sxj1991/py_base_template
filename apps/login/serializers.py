@@ -17,6 +17,12 @@ class UserSerializer(serializers.ModelSerializer):
             ret.append({"address": item.address, "email": item.email})
         return ret
 
+    def validate(self, attrs):
+        name = attrs.get('user_name')
+        if name == "baba":
+            raise RuntimeError("名字不允许")
+        return attrs
+
     class Meta:
         model = UserModel
         exclude = ['user_name', 'user_id']
