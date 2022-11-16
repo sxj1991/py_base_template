@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 class APIResponse(Response):
 
-    def __init__(self, data_status=0, data_msg=True, results=None, http_status=status.HTTP_200_OK, headers=None, exception=False,
+    def __init__(self, data_status=0, data_msg=None, results=None, http_status=status.HTTP_200_OK, headers=None, exception=False,
                  **kwargs):
         # data的初始状态
         data = {

@@ -14,6 +14,8 @@ logger = logging.getLogger('only_console_logger')
     1. mock数据 模拟model层
     2. 简单的单元测试
 """
+
+
 class LoginTest(TestCase):
 
     def setUp(self):

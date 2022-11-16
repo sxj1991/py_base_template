@@ -20,12 +20,12 @@ class UserView(APIView):
     def get(self, request, id):
         # 获取认证标记
         if request.auth:
-            logger.info(msg=f"接收前端查询数据:request:{request.data}-id:{id}")
+            logger.info(msg=f"接收前端查询数据:request:{request}-id:{id}")
             user = UserModel.objects.filter(user_id=id).first()
             if user:
                 serializer = UserSerializer(instance=user)
                 return APIResponse(results=serializer.data)
-        return APIResponse(data_msg=False, status="5002")
+        return APIResponse(data_msg="认证不通过", data_status="5002", http_status=status.HTTP_204_NO_CONTENT)
 
 
 class UsersView(APIView):
@@ -35,7 +35,7 @@ class UsersView(APIView):
         if users:
             serializer = UserSerializer(instance=users, many=True)
             return APIResponse(results=serializer.data)
-        return APIResponse(data_msg=False, status="5002")
+        return APIResponse(data_msg="数据不存在", data_status="5002", http_status=status.HTTP_204_NO_CONTENT)
 
     def post(self, request):
         # 用户名唯一
@@ -43,15 +43,15 @@ class UsersView(APIView):
         if name:
             user = UserModel.objects.filter(user_name=name)
             if user:
-                return APIResponse(data_msg=False, status="5001")
+                return APIResponse(data_msg="", data_status="5001")
             else:
                 serializer = UserSerializer(data=request.data)
                 if serializer.is_valid():
                     serializer.save()
                     return APIResponse()
                 else:
-                    return APIResponse(data_msg=False, results=serializer.errors, status="5001")
-        return APIResponse(data_msg=False, status="5001")
+                    return APIResponse(data_msg="", results=serializer.errors, data_status="5001")
+        return APIResponse(data_msg="参数不存在", data_status="5001", http_status=status.HTTP_204_NO_CONTENT)
 
     def put(self, request):
 
@@ -62,7 +62,7 @@ class UsersView(APIView):
             serializer.save()
             return APIResponse()
         else:
-            return APIResponse(data_msg=False, results=serializer.errors, status="5001")
+            return APIResponse(data_msg="认证不通过", results=serializer.errors, data_status="5001")
 
     def delete(self, request, id):
         if id:
@@ -70,7 +70,7 @@ class UsersView(APIView):
             DetailModel.objects.filter(user_id=id).delete()
             return APIResponse()
 
-        return APIResponse(data_msg=False, status="5001")
+        return APIResponse(data_msg="", data_status="5001")
 
 
 class LoginView(APIView):
@@ -85,4 +85,4 @@ class LoginView(APIView):
                 if password and password == user.password:
                     # 返回token
                     return APIResponse(results=create_token(userName=user.user_name))
-        return APIResponse(data_msg=False, status=status.HTTP_401_UNAUTHORIZED)
+        return APIResponse(data_msg="", http_status=status.HTTP_401_UNAUTHORIZED)
