@@ -1,5 +1,8 @@
 from django.urls import re_path
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 from .views import UserView, LoginView, UsersView
+
 
 urlpatterns = [
     # 根据用户id 查询用户信息
