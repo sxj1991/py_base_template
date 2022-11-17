@@ -1,4 +1,5 @@
 # 生成密钥接口
+import time
 from datetime import datetime, timedelta
 
 import jwt
@@ -7,19 +8,18 @@ from jwt import exceptions
 JWT_SALT = 'qazwsxpl@1!jwt'
 
 
-def create_token(userName, timeout=3600):
+def create_token(userName, timeout=24):
     """
-        :param payload:  例如：{'user_id':1,'username':'wupeiqi'}用户信息
-        :param timeout: token的过期时间，默认20分钟
+        :param payload:  例如：{'user_id':1,'username':'lin'}用户信息
+        :param timeout: token的过期时间，默认24小时
         :return:
     """
     payload = {
-        'exp': datetime.utcnow() + timedelta(seconds=timeout),  # 单位秒
+        'exp': datetime.utcnow() + timedelta(hours=timeout),  # 单位小时
         'iat': datetime.utcnow(),
         'data': {'username': userName}
     }
-    # payload={}
-    # payload['exp'] = datetime.utcnow() + timedelta(seconds=3)
+
     token = jwt.encode(payload=payload, key=JWT_SALT, algorithm="HS256")
     return token
 

@@ -130,6 +130,16 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'py_base_template.exception.global_exception_handler',
 }
 
+# django 缓存
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'cache-snowflake'  # 本地缓存名称（自定义）
+    }
+}
+
+
+
 # logging配置
 LOG_PATH = BASE_DIR / 'log'
 FILE_NAME = 'django.log'

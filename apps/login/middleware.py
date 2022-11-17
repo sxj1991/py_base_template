@@ -6,6 +6,8 @@ from django.shortcuts import HttpResponse
 from django.utils.deprecation import MiddlewareMixin
 from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
+
+from py_base_template import cache
 from .utils import parse_payload
 import logging
 
@@ -42,7 +44,18 @@ class LoginMiddle(MiddlewareMixin):
         if "login" in request.path:
             return
         else:
-            result = parse_payload(request.META.get("HTTP_TOKEN"))
+            token = request.META.get("HTTP_TOKEN")
+            # 判断缓存是否再存key key不存在则过期
+            if not cache.exist_cache(token):
+                try:
+                    logger.error("token过期")
+                    raise AuthenticationFailed("token过期")
+                except AuthenticationFailed as e:
+                    return self.build_cors_resp("*", str(e), request.method, status.HTTP_401_UNAUTHORIZED)
+            # 刷新token 缓存时间
+            cache.refresh_cache(token, token)
+            # 验证token
+            result = parse_payload(token)
             if not result["status"]:
                 # 响应前端 详细错误信息
                 try:
@@ -50,6 +63,7 @@ class LoginMiddle(MiddlewareMixin):
                     raise AuthenticationFailed("认证未通过")
                 except AuthenticationFailed as e:
                     return self.build_cors_resp("*", str(e), request.method, status.HTTP_401_UNAUTHORIZED)
+
 
     # 响应数据中间件拦截
     # def process_response(self, request, response):

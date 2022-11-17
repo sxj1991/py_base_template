@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from py_base_template import cache
 from py_base_template.auth import JwtAuthentication
 from py_base_template.decorator import log_resp
 from py_base_template.exception import global_exception_handler
@@ -86,5 +87,7 @@ class LoginView(APIView):
                 password = request.data["password"]
                 if password and password == user.password:
                     # 返回token
-                    return APIResponse(results=create_token(userName=user.user_name))
+                    token = create_token(userName=user.user_name)
+                    cache.write_data_to_cache(key=token, value=token)
+                    return APIResponse(results=token)
         return APIResponse(data_msg="", http_status=status.HTTP_401_UNAUTHORIZED)
