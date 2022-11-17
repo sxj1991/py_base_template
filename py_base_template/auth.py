@@ -20,6 +20,8 @@ class JwtAuthentication(BaseAuthentication):
         认证方法
         request: 本次客户端发送过来的http请求对象
         """
+        if "login" in request.path:
+            return
         token = request.META.get("HTTP_TOKEN")
         result = parse_payload(token)
         logger.info(f'user:{result}')

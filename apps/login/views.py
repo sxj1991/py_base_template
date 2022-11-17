@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 
 from py_base_template.auth import JwtAuthentication
 from py_base_template.decorator import log_resp
+from py_base_template.exception import global_exception_handler
 from .serializers import UserSerializer
 from .models import UserModel, DetailModel
 from apps.base_response.api_response import APIResponse
@@ -15,7 +16,8 @@ logger = logging.getLogger('full_logger')
 
 
 class UserView(APIView):
-    authentication_classes = [JwtAuthentication, ]
+    # authentication_classes = [JwtAuthentication, ] 局部认证器设置
+
     @log_resp
     def get(self, request, id):
         # 获取认证标记

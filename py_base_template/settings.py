@@ -126,7 +126,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'py_base_template.auth.JwtAuthentication',
     ],
+    'EXCEPTION_HANDLER': 'py_base_template.exception.global_exception_handler',
 }
 
 # logging配置
