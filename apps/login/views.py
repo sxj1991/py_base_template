@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 
 from py_base_template import cache
 from py_base_template.auth import JwtAuthentication
+from py_base_template.base_paginator import PageMixin
 from py_base_template.decorator import log_resp
 from py_base_template.exception import global_exception_handler
 from .serializers import UserSerializer
@@ -37,7 +38,8 @@ class UsersView(APIView):
         users = UserModel.objects.all()
         if users:
             serializer = UserSerializer(instance=users, many=True)
-            return APIResponse(results=serializer.data)
+            data = PageMixin.build_base_paginator(request, users, UserSerializer)
+            return APIResponse(results=data)
         return APIResponse(data_msg="数据不存在", data_status="5002", http_status=status.HTTP_204_NO_CONTENT)
 
     def post(self, request):

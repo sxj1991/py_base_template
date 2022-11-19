@@ -19,7 +19,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         name = attrs.get('user_name')
-        if name == "baba":
+        # 验证参数
+        if name == "xxx":
             raise RuntimeError("名字不允许")
         return attrs
 
