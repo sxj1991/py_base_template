@@ -104,9 +104,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -122,12 +122,12 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# jwt认证器全局配置
+# django 全局配置
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'py_base_template.auth.JwtAuthentication',
+        'py_base_template.auth.JwtAuthentication',  # 全局自定义认证器
     ],
-    'EXCEPTION_HANDLER': 'py_base_template.exception.global_exception_handler',
+    'EXCEPTION_HANDLER': 'py_base_template.exception.global_exception_handler',  # 异常处理器（捕获不了中间件异常）
 }
 
 # django 缓存
