@@ -128,6 +128,9 @@ REST_FRAMEWORK = {
         'py_base_template.auth.JwtAuthentication',  # 全局自定义认证器
     ],
     'EXCEPTION_HANDLER': 'py_base_template.exception.global_exception_handler',  # 异常处理器（捕获不了中间件异常）
+    'DEFAULT_PERMISSION_CLASSES': (
+        'py_base_template.permission.global_permission',
+    )
 }
 
 # django 缓存
@@ -137,8 +140,6 @@ CACHES = {
         'LOCATION': 'cache-snowflake'  # 本地缓存名称（自定义）
     }
 }
-
-
 
 # logging配置
 LOG_PATH = BASE_DIR / 'log'
