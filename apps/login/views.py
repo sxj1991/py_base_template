@@ -35,7 +35,7 @@ class UserView(APIView):
 class UsersView(APIView):
 
     def get(self, request):
-        users = UserModel.objects.all()
+        users = UserModel.objects.all().order_by("-create_time")
         if users:
             serializer = UserSerializer(instance=users, many=True)
             data = PageMixin.build_base_paginator(request, users, UserSerializer)
