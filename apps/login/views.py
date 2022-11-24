@@ -37,7 +37,12 @@ class UsersView(APIView):
     def get(self, request):
         users = UserModel.objects.all().order_by("-create_time")
         if users:
+            # model 序列化几种方式：
+            # 1. model 手动转字典类型 user.to_dict()
+            new_user = [user.to_dict() for user in users]
+            # 2. 利用序列化器
             serializer = UserSerializer(instance=users, many=True)
+            # 3. 利用序列化器基础上 添加分页操作
             data = PageMixin.build_base_paginator(request, users, UserSerializer)
             return APIResponse(results=data)
         return APIResponse(data_msg="数据不存在", data_status="5002", http_status=status.HTTP_204_NO_CONTENT)

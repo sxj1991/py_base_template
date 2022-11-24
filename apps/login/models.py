@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 
 
@@ -10,12 +12,24 @@ class UserModel(models.Model):
     role = models.CharField(max_length=50)
     create_time = models.DateTimeField(auto_now_add=True)
 
-
     class Meta:
         db_table = "tb_user"
 
     def __str__(self):
         return self.user_id
+
+    def to_dict(self):
+        opts = self._meta
+        data = {}
+        for f in opts.concrete_fields:
+            value = f.value_from_object(self)
+            if isinstance(value, datetime):
+                value = value.strftime('%Y-%m-%d %H:%M:%S')
+            if f.name == 'user_id':
+                data['userId'] = value
+                continue
+            data[f.name] = value
+        return data
 
 
 class DetailModel(models.Model):

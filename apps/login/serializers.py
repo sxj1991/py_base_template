@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
     userId = serializers.IntegerField(source="user_id", required=False)
     userName = serializers.CharField(max_length=30, source="user_name")
     detail = serializers.SerializerMethodField()
-    createTime = serializers.DateTimeField(source="create_time", required=False)
+    createTime = serializers.DateTimeField(source="create_time", required=False, format="%Y-%m-%d %H:%M:%S")
 
     def get_detail(self, obj):
         user = obj
