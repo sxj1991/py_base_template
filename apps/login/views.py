@@ -59,7 +59,7 @@ class UsersView(APIView):
                     # 代码块级 事务 非代码块内 则不会放入事务
                     with transaction.atomic():
                         serializer.save()
-
+                        transaction.on_commit(lambda: logger.info("事务成功提交回滚方法"))
                     return APIResponse()
                 else:
                     return APIResponse(data_msg="", results=serializer.errors, data_status="5001")
