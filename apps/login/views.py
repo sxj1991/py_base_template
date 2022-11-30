@@ -1,12 +1,10 @@
+from django.db import transaction
 from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from py_base_template import cache
-from py_base_template.auth import JwtAuthentication
 from py_base_template.base_paginator import PageMixin
 from py_base_template.decorator import log_resp
-from py_base_template.exception import global_exception_handler
 from .serializers import UserSerializer
 from .models import UserModel, DetailModel
 from apps.base_response.api_response import APIResponse
@@ -32,6 +30,7 @@ class UserView(APIView):
         return APIResponse(data_msg="认证不通过", data_status="5002", http_status=status.HTTP_204_NO_CONTENT)
 
 
+# 引入事务管理
 class UsersView(APIView):
 
     def get(self, request):
@@ -57,22 +56,31 @@ class UsersView(APIView):
             else:
                 serializer = UserSerializer(data=request.data)
                 if serializer.is_valid():
-                    serializer.save()
+                    # 代码块级 事务 非代码块内 则不会放入事务
+                    with transaction.atomic():
+                        serializer.save()
+
                     return APIResponse()
                 else:
                     return APIResponse(data_msg="", results=serializer.errors, data_status="5001")
         return APIResponse(data_msg="参数不存在", data_status="5001", http_status=status.HTTP_204_NO_CONTENT)
 
+    # 函数级的事务控制
+    @transaction.atomic
     def put(self, request):
-
         user = UserModel.objects.get(user_id=request.data["userId"] or "")
         serializer = UserSerializer(data=request.data, instance=user)
+        # 回滚保存点
+        save_tag = transaction.savepoint()
+        try:
+            if serializer.is_valid():
+                serializer.save()
+                return APIResponse()
+        except:
+            # 回滚操作
+            transaction.savepoint_rollback(save_tag)
 
-        if serializer.is_valid():
-            serializer.save()
-            return APIResponse()
-        else:
-            return APIResponse(data_msg="认证不通过", results=serializer.errors, data_status="5001")
+        return APIResponse(data_msg="认证不通过", results=serializer.errors, data_status="5001")
 
     def delete(self, request, id):
         if id:
