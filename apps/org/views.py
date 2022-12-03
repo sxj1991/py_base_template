@@ -14,11 +14,36 @@ logger = logging.getLogger('full_logger')
 
 class OrgViews(APIView):
     def get(self, request, id):
-        logger.info(msg=f"接收前端查询数据:request:{request.data}-id:{id}")
+        role = request.data.get("role")
+        logger.info(msg=f"接收前端查询数据:request:{request.data}-id:{id}-role:{role}")
         orgType = OrgTypeModel.objects.get(org_type_id=id)
+        role_dict = {
+            "default": self.__print_msg_default,
+            "admin": self.__print_msg_admin
+        }
+        data = {
+            "role": role
+        }
+        # 字典根据role传入值选择其中的函数引用,根据data解构的参数执行方法
+        role_dict[role](**data)
         if orgType:
             serializer = OrgTypeSerializer(instance=orgType)
             return APIResponse(results=serializer.data)
+        return APIResponse()
+
+    @classmethod
+    def __print_msg_default(cls, role):
+        print(f"msg_default:{role}")
+
+    @classmethod
+    def __print_msg_admin(cls, role):
+        print(f"msg_admin:{role}")
+
+    def post(self, request, id):
+        logger.info(msg=f"接收前端查询数据:request:{request.data}-id:{id}")
+        org = OrgTypeModel()
+        org.org_type = "newType"
+        org.save()
         return APIResponse()
 
 
@@ -32,7 +57,7 @@ class FileViews(APIView):
             attr_value = request.FILES['file'].read()
             if type(attr_value) is bytes:
                 start_thread(str(attr_value, encoding='utf-8'))
-                logger.info(f"读取文件内容:{str(attr_value,encoding='utf-8')}")
+                logger.info(f"读取文件内容:{str(attr_value, encoding='utf-8')}")
             elif type(attr_value) is str:
                 start_thread(str(attr_value, encoding='utf-8'))
                 logger.info(f"读取文件内容:{attr_value}")

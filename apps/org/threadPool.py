@@ -14,14 +14,24 @@ logger = logging.getLogger('full_logger')
 lock = threading.Lock()
 
 
+# python 装饰器 类似代理模式 在方法前后可以做一些操作 增强方法功能
+def lock_decorator(fn):
+    def wrappers(*args, **kwargs):
+        # 加锁 lock.acquire(timeout=1) 可设超市时间
+        lock.acquire()
+        result = fn(*args, **kwargs)
+        # 解锁
+        lock.release()
+        return result
+
+    return wrappers
+
+
+@lock_decorator
 def log_message(message: str):
-    # 加锁 lock.acquire(timeout=1) 可设超市时间
-    lock.acquire()
     print(f"打印信息:{message}-pid:{os.getpid()}")
     sleep(random.randint(1, 5))
     print(f"done-{message}")
-    # 解锁
-    lock.release()
 
 
 def start_thread(message: str):
