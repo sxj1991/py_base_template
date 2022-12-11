@@ -17,6 +17,8 @@ class global_permission(BasePermission):
         """
         if "login" in request.path:
             return True
+        # 简单利用数据库角色名称进行匹配
+        # TODO RBAC权限设计模型实现权限设计
         u = UserModel.objects.filter(user_name=request.auth).first()
 
         return u.role == "admin"
