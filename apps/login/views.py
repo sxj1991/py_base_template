@@ -103,7 +103,7 @@ class LoginView(APIView):
                 password = request.data["password"]
                 if password and password == user.password:
                     # 返回token
-                    token = create_token(userName=user.user_name)
+                    token = create_token(userId=user.user_id)
                     cache.write_data_to_cache(key=token, value=token)
                     return APIResponse(results=token)
         return APIResponse(data_msg="", http_status=status.HTTP_401_UNAUTHORIZED)

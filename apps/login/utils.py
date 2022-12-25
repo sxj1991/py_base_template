@@ -8,8 +8,9 @@ from jwt import exceptions
 JWT_SALT = 'qazwsxpl@1!jwt'
 
 
-def create_token(userName, timeout=24):
+def create_token(userId, timeout=24):
     """
+        :param userId: 用户id
         :param payload:  例如：{'user_id':1,'username':'lin'}用户信息
         :param timeout: token的过期时间，默认24小时
         :return:
@@ -17,7 +18,7 @@ def create_token(userName, timeout=24):
     payload = {
         'exp': datetime.utcnow() + timedelta(hours=timeout),  # 单位小时
         'iat': datetime.utcnow(),
-        'data': {'username': userName}
+        'data': {'userId': userId}
     }
 
     token = jwt.encode(payload=payload, key=JWT_SALT, algorithm="HS256")

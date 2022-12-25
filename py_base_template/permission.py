@@ -1,10 +1,11 @@
 from rest_framework.permissions import BasePermission
 
 from apps.login.models import UserModel
+from apps.login.serializers import UserSerializer
 
 
 # 全局权限校验
-class global_permission(BasePermission):
+class GlobalPermission(BasePermission):
     """
     自定义权限，可用于全局配置，也可以用于局部
     """
@@ -19,10 +20,14 @@ class global_permission(BasePermission):
         if "login" in request.path:
             return True
         # request.auth 通过auth.py 存入认证的用户信息
-        # TODO RBAC权限设计模型实现权限设计
-        UserModel.objects.filter(user_name=request.auth).first()
-
-        return True
+        # RBAC权限设计模型实现权限设计
+        user = UserModel.objects.filter(user_id=request.auth).first()
+        if user:
+            serializer = UserSerializer(instance=user)
+            for menu in serializer.data['menu']:
+                if request.META.get("HTTP_PERMISSION") in menu['permission']:
+                    return True
+        return False
 
     def has_object_permission(self, request, view, obj):
         """
