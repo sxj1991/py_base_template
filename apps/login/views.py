@@ -82,10 +82,11 @@ class UsersView(APIView):
 
         return APIResponse(data_msg="认证不通过", results=serializer.errors, data_status="5001")
 
-    def delete(self, request, id):
-        if id:
-            UserModel.objects.get(user_id=id).delete()
-            DetailModel.objects.filter(user_id=id).delete()
+    def delete(self, request):
+        userId = request.data["userId"]
+        if userId:
+            UserModel.objects.get(user_id=userId).delete()
+            DetailModel.objects.filter(user_id=userId).delete()
             return APIResponse()
 
         return APIResponse(data_msg="", data_status="5001")
@@ -102,7 +103,7 @@ class LoginView(APIView):
                 password = request.data["password"]
                 if password and password == user.password:
                     # 返回token
-                    token = create_token(userName=user.user_name)
+                    token = create_token(userId=user.user_id)
                     cache.write_data_to_cache(key=token, value=token)
                     return APIResponse(results=token)
         return APIResponse(data_msg="", http_status=status.HTTP_401_UNAUTHORIZED)

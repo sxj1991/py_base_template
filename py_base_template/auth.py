@@ -10,6 +10,7 @@ from apps.login.utils import parse_payload
 logger = logging.getLogger('full_logger')
 
 
+# 全局认证类
 class JwtAuthentication(BaseAuthentication):
     """
     自定义认证方式
@@ -30,7 +31,7 @@ class JwtAuthentication(BaseAuthentication):
             logger.error("认证未通过")
             raise AuthenticationFailed("认证未通过")
         # 获取当前系统中用户表对应的用户模型类
-        userName = result['payload']['data']['username']
-        user = UserModel.objects.filter(user_name=userName).first()
+        userId = result['payload']['data']['userId']
+        user = UserModel.objects.filter(user_id=userId).first()
         # 放入认证的模型和认证的标记
-        return (user, userName)
+        return (user, user.user_id)

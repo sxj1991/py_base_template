@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'apps.login.apps.LoginConfig',
     'apps.base_response.apps.ResponseConfig',
     'apps.org.apps.OrgConfig',
+    'apps.permission.apps.PermissionConfig',
 ]
 
 MIDDLEWARE = [
@@ -129,7 +130,7 @@ REST_FRAMEWORK = {
     ],
     # 'EXCEPTION_HANDLER': 'py_base_template.exception.global_exception_handler',  # 异常处理器（捕获不了中间件异常）
     'DEFAULT_PERMISSION_CLASSES': (
-        'py_base_template.permission.global_permission',
+        'py_base_template.permission.GlobalPermission',
     )
 }
 
