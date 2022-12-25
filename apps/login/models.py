@@ -3,13 +3,11 @@ from datetime import datetime
 from django.db import models
 
 
-# Create your models here.
-
+# 用户模型
 class UserModel(models.Model):
     user_id = models.AutoField(primary_key=True, db_column="user_id")
     user_name = models.CharField(db_column="user_name", max_length=30)
     password = models.CharField(max_length=50)
-    role = models.CharField(max_length=50)
     create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -18,6 +16,7 @@ class UserModel(models.Model):
     def __str__(self):
         return self.user_id
 
+    # to_dict 日期格式化
     def to_dict(self):
         opts = self._meta
         data = {}
@@ -32,6 +31,7 @@ class UserModel(models.Model):
         return data
 
 
+# 用户详情模型
 class DetailModel(models.Model):
     id = models.AutoField(primary_key=True, db_column="id")
     address = models.CharField(max_length=30)

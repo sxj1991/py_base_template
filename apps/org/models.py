@@ -1,9 +1,7 @@
 from django.db import models
 
 
-# Create your models here.
-
-
+# 组织模型类
 class OrgModel(models.Model):
     org_id = models.AutoField(primary_key=True, db_column="org_id")
     org_name = models.CharField(max_length=50)
@@ -16,6 +14,7 @@ class OrgModel(models.Model):
         return self.org_id
 
 
+# 组织类型模型类
 class OrgTypeModel(models.Model):
     org_type_id = models.AutoField(primary_key=True, db_column="org_type_id")
     org_type = models.CharField(max_length=50)

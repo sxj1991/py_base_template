@@ -82,10 +82,11 @@ class UsersView(APIView):
 
         return APIResponse(data_msg="认证不通过", results=serializer.errors, data_status="5001")
 
-    def delete(self, request, id):
-        if id:
-            UserModel.objects.get(user_id=id).delete()
-            DetailModel.objects.filter(user_id=id).delete()
+    def delete(self, request):
+        userId = request.data["userId"]
+        if userId:
+            UserModel.objects.get(user_id=userId).delete()
+            DetailModel.objects.filter(user_id=userId).delete()
             return APIResponse()
 
         return APIResponse(data_msg="", data_status="5001")

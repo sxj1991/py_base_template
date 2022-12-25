@@ -10,6 +10,7 @@ from apps.login.utils import parse_payload
 logger = logging.getLogger('full_logger')
 
 
+# 全局认证类
 class JwtAuthentication(BaseAuthentication):
     """
     自定义认证方式

@@ -21,6 +21,7 @@ CORS_HEADERS = {
 logger = logging.getLogger('full_logger')
 
 
+# 登录中间件校验token
 class LoginMiddle(MiddlewareMixin):
     @staticmethod
     def build_cors_resp(http_origin, details, method, code=status.HTTP_400_BAD_REQUEST):
@@ -63,7 +64,6 @@ class LoginMiddle(MiddlewareMixin):
                     raise AuthenticationFailed("认证未通过")
                 except AuthenticationFailed as e:
                     return self.build_cors_resp("*", str(e), request.method, status.HTTP_401_UNAUTHORIZED)
-
 
     # 响应数据中间件拦截
     # def process_response(self, request, response):

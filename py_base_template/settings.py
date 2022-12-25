@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'apps.login.apps.LoginConfig',
     'apps.base_response.apps.ResponseConfig',
     'apps.org.apps.OrgConfig',
+    'apps.permission.apps.PermissionConfig',
 ]
 
 MIDDLEWARE = [

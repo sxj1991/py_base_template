@@ -3,6 +3,7 @@ from rest_framework import serializers
 from apps.login.models import UserModel, DetailModel
 
 
+# 用户序列化器
 class UserSerializer(serializers.ModelSerializer):
     userId = serializers.IntegerField(source="user_id", required=False)
     userName = serializers.CharField(max_length=30, source="user_name")
@@ -17,6 +18,9 @@ class UserSerializer(serializers.ModelSerializer):
         for item in details:
             ret.append({"address": item.address, "email": item.email})
         return ret
+
+    def get_role(self, obj):
+        user = obj
 
     def validate(self, attrs):
         name = attrs.get('user_name')

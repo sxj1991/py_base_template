@@ -3,6 +3,7 @@ from rest_framework import serializers
 from apps.org.models import OrgModel
 
 
+# 组织类型序列化器
 class OrgTypeSerializer(serializers.ModelSerializer):
     orgTypeId = serializers.IntegerField(source="org_type_id", required=False)
     orgType = serializers.CharField(max_length=30, source="org_type")
