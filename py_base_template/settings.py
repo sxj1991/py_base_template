@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import datetime
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,6 +26,8 @@ SECRET_KEY = 'django-insecure-(+tq6xza1-qx_bz%g33h5%k0@(o!uyjj2yzid^6v)bns_$q=2i
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'file')
 
 # Application definition
 
@@ -145,6 +148,7 @@ CACHES = {
 # logging配置
 LOG_PATH = BASE_DIR / 'log'
 FILE_NAME = 'django.log'
+PID = os.getpid()
 LOGGING = {
     'version': 1,
     #  disable_existing_loggers 键被设置为 True 则默认配置中的所有记录器都将被禁用
@@ -180,7 +184,7 @@ LOGGING = {
             'level': 'INFO',
             'formatter': 'json',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '{0}/{1}_info.log'.format(LOG_PATH, FILE_NAME),
+            'filename': '{0}/{1}_{2}_info.log'.format(LOG_PATH, FILE_NAME, PID),
             'when': "d",
             'interval': 1,
             'encoding': 'utf8',
@@ -192,7 +196,7 @@ LOGGING = {
             'level': 'ERROR',
             'formatter': 'json',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '{0}/{1}_error.log'.format(LOG_PATH, FILE_NAME),
+            'filename': '{0}/{1}_{2}_error.log'.format(LOG_PATH, FILE_NAME, PID),
             'when': "d",
             'interval': 1,
             'encoding': 'utf8',

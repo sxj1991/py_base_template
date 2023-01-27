@@ -1,5 +1,8 @@
+import json
+
 from django.http import StreamingHttpResponse
 from rest_framework.views import APIView
+from django.core.files.storage import FileSystemStorage
 
 from apps.base_response.api_response import APIResponse
 from apps.org.models import OrgModel, OrgTypeModel
@@ -14,8 +17,10 @@ logger = logging.getLogger('full_logger')
 
 class OrgViews(APIView):
     def get(self, request, id):
-        role = request.data.get("role")
-        logger.info(msg=f"接收前端查询数据:request:{request.data}-id:{id}-role:{role}")
+        # 获取前端参数方式 request.GET.get
+        role = request.GET.get("role")
+
+        logger.info(msg=f"接收前端查询数据:request:{request.data}-id:{id}-role:{role}-")
         orgType = OrgTypeModel.objects.get(org_type_id=id)
         role_dict = {
             "default": self.__print_msg_default,
@@ -40,7 +45,13 @@ class OrgViews(APIView):
         print(f"msg_admin:{role}")
 
     def post(self, request, id):
-        logger.info(msg=f"接收前端查询数据:request:{request.data}-id:{id}")
+        # 获取前端参数方式 request.data.get
+        # role = request.data.get("role")
+        # 获取前端参数方式 json
+        json_body = json.loads(request.body)
+        role_json = json_body.get("role")
+
+        logger.info(msg=f"接收前端查询数据:request:{request.data}-id:{id}-role_json:{role_json}")
         org = OrgTypeModel()
         org.org_type = "newType"
         org.save()
@@ -50,8 +61,13 @@ class OrgViews(APIView):
 class FileViews(APIView):
     def post(self, request):
         if request.FILES.get('image'):
-            # 上传图片文件
+            # 原生上传图片文件
             handle_uploaded_file(request.FILES['image'])
+            # django fileSystemStorage 上传
+            fs = FileSystemStorage()
+            fs.save("fileSystemStorage_save.jpg", request.FILES['image'])
+            upload_path = fs.path("fileSystemStorage_save.jpg")
+            logger.info(msg=f"上传路径:{upload_path}")
         elif request.FILES.get('file'):
             # 读取文件内容
             attr_value = request.FILES['file'].read()
