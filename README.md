@@ -1,4 +1,4 @@
-# python django 项目模板
+# django项目模板
 ---
 
 ## 写在项目开头
