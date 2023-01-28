@@ -19,4 +19,5 @@ urlpatterns = [
     path('v1/user/', include("apps.login.urls")),
     path('v1/org/', include("apps.org.urls")),
     path('v1/permission/', include("apps.permission.urls")),
+    path('v1/file/', include("apps.remote_file.urls")),
 ]

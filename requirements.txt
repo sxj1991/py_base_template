@@ -3,3 +3,4 @@ djangorestframework~=3.14.0
 drf-yasg==1.21.4
 PyJWT~=2.6.0
 djangorestframework_simplejwt ~= 5.2.2
+paramiko==2.10.2

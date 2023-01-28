@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'apps.base_response.apps.ResponseConfig',
     'apps.org.apps.OrgConfig',
     'apps.permission.apps.PermissionConfig',
+    'apps.remote_file.apps.RemoteFileConfig',
 ]
 
 MIDDLEWARE = [
