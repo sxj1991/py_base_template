@@ -1,10 +1,12 @@
 import json
 
+from django.core import serializers
 from django.http import StreamingHttpResponse
 from rest_framework.views import APIView
 from django.core.files.storage import FileSystemStorage
 
 from apps.base_response.api_response import APIResponse
+from apps.login.models import UserModel
 from apps.org.models import OrgModel, OrgTypeModel
 from apps.org.serializers import OrgTypeSerializer
 from apps.org.threadPool import start_thread
@@ -44,7 +46,7 @@ class OrgViews(APIView):
     def __print_msg_admin(cls, role):
         print(f"msg_admin:{role}")
 
-    def post(self, request, id):
+    def put(self, request, id):
         # 获取前端参数方式 request.data.get
         # role = request.data.get("role")
         # 获取前端参数方式 json
@@ -56,6 +58,28 @@ class OrgViews(APIView):
         org.org_type = "newType"
         org.save()
         return APIResponse()
+
+    def post(self, request, id):
+        logger.info(msg=f"接收前端查询数据id:{id}")
+        match = request.data["match"]
+
+        if match == "org":
+            org = OrgModel.objects.filter(pk=id).first()
+            users = findOrgMatchUser(org)
+            data = {
+                "users": users,
+                "org": org.org_name
+            }
+
+        else:
+            user = UserModel.objects.filter(pk=id).first()
+            orgs = findUserMatchOrg(user)
+            data = {
+                "orgs": orgs,
+                "user": user.user_name
+            }
+
+        return APIResponse(results=data)
 
 
 class FileViews(APIView):
@@ -102,3 +126,24 @@ def file_iterator(file_name, chunk_size=1024):
                 yield chunk
             else:
                 break
+
+
+def findUserMatchOrg(user: UserModel):
+    orgs = []
+    for o in user.org_model.all():
+        org = {
+            "orgName": o.org_name
+        }
+        orgs.append(org)
+    return orgs
+
+
+def findOrgMatchUser(org: OrgModel):
+    users = []
+    for u in org.user_model.all():
+        user = {
+            "name": u.user_name,
+            "password": u.password
+        }
+        users.append(user)
+    return users

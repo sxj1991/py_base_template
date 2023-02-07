@@ -17,5 +17,9 @@ class RemoteViews(APIView):
         client.connect(hostname='192.168.0.1', port=22, username='root', password='qazwsx123')
         # 建立sftp服务
         sftp = client.open_sftp()
-        print(sftp.listdir("/home/app"))
+        # 获取目录信息 put上传 get下载
+        sftp.listdir("/home/app")
+        # 关闭连接
+        sftp.close()
+        client.close()
         return APIResponse(data_msg="查询成功", http_status=status.HTTP_200_OK)

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import datetime
 import os
+import time
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -149,7 +150,7 @@ CACHES = {
 # logging配置
 LOG_PATH = BASE_DIR / 'log'
 FILE_NAME = 'django.log'
-PID = os.getpid()
+TIME = time.strftime("%Y-%m-%d", time.localtime())
 LOGGING = {
     'version': 1,
     #  disable_existing_loggers 键被设置为 True 则默认配置中的所有记录器都将被禁用
@@ -185,7 +186,7 @@ LOGGING = {
             'level': 'INFO',
             'formatter': 'json',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '{0}/{1}_{2}_info.log'.format(LOG_PATH, FILE_NAME, PID),
+            'filename': '{0}/{1}_{2}_info.log'.format(LOG_PATH, FILE_NAME,TIME),
             'when': "d",
             'interval': 1,
             'encoding': 'utf8',
@@ -197,7 +198,7 @@ LOGGING = {
             'level': 'ERROR',
             'formatter': 'json',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '{0}/{1}_{2}_error.log'.format(LOG_PATH, FILE_NAME, PID),
+            'filename': '{0}/{1}_{2}_error.log'.format(LOG_PATH, FILE_NAME,TIME),
             'when': "d",
             'interval': 1,
             'encoding': 'utf8',
