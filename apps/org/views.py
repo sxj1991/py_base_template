@@ -7,6 +7,7 @@ from django.core.files.storage import FileSystemStorage
 
 from apps.base_response.api_response import APIResponse
 from apps.login.models import UserModel
+from apps.org.apps import OrgService
 from apps.org.models import OrgModel, OrgTypeModel
 from apps.org.serializers import OrgTypeSerializer
 from apps.org.threadPool import start_thread
@@ -16,6 +17,7 @@ import logging
 # Create your views here.
 logger = logging.getLogger('full_logger')
 
+org_service = OrgService()
 
 class OrgViews(APIView):
     def get(self, request, id):
@@ -65,7 +67,7 @@ class OrgViews(APIView):
 
         if match == "org":
             org = OrgModel.objects.filter(pk=id).first()
-            users = findOrgMatchUser(org)
+            users = org_service.findOrgMatchUser(org)
             data = {
                 "users": users,
                 "org": org.org_name
@@ -73,9 +75,9 @@ class OrgViews(APIView):
 
         else:
             user = UserModel.objects.filter(pk=id).first()
-            orgs = findUserMatchOrg(user)
+            orgs = org_service.findUserMatchOrg(user)
             data = {
-                "orgs": orgs,
+                "org": orgs,
                 "user": user.user_name
             }
 
@@ -128,22 +130,3 @@ def file_iterator(file_name, chunk_size=1024):
                 break
 
 
-def findUserMatchOrg(user: UserModel):
-    orgs = []
-    for o in user.org_model.all():
-        org = {
-            "orgName": o.org_name
-        }
-        orgs.append(org)
-    return orgs
-
-
-def findOrgMatchUser(org: OrgModel):
-    users = []
-    for u in org.user_model.all():
-        user = {
-            "name": u.user_name,
-            "password": u.password
-        }
-        users.append(user)
-    return users
