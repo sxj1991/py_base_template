@@ -8,17 +8,22 @@ class OrgConfig(AppConfig):
 
 class OrgService(object):
     @staticmethod
-    def findUserMatchOrg(user):
-        orgs = []
+    def find_user_match_org(user):
+        args = []
         for o in user.org_model.all():
             org = {
                 "orgName": o.org_name
             }
-            orgs.append(org)
-        return orgs
+            args.append(org)
+
+        data = {
+            "org": args,
+            "user": user.user_name
+        }
+        return data
 
     @staticmethod
-    def findOrgMatchUser(org):
+    def find_org_match_user(org):
         users = []
         for u in org.user_model.all():
             user = {
@@ -26,4 +31,8 @@ class OrgService(object):
                 "password": u.password
             }
             users.append(user)
-        return users
+        data = {
+            "users": users,
+            "org": org.org_name
+        }
+        return data

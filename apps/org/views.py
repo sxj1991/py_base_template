@@ -11,7 +11,6 @@ from apps.org.apps import OrgService
 from apps.org.models import OrgModel, OrgTypeModel
 from apps.org.serializers import OrgTypeSerializer
 from apps.org.threadPool import start_thread
-from py_base_template.decorator import log_resp
 import logging
 
 # Create your views here.
@@ -19,13 +18,14 @@ logger = logging.getLogger('full_logger')
 
 org_service = OrgService()
 
+
 class OrgViews(APIView):
     def get(self, request, id):
         # 获取前端参数方式 request.GET.get
         role = request.GET.get("role")
 
         logger.info(msg=f"接收前端查询数据:request:{request.data}-id:{id}-role:{role}-")
-        orgType = OrgTypeModel.objects.get(org_type_id=id)
+        org_type = OrgTypeModel.objects.get(org_type_id=id)
         role_dict = {
             "default": self.__print_msg_default,
             "admin": self.__print_msg_admin
@@ -35,8 +35,8 @@ class OrgViews(APIView):
         }
         # 字典根据role传入值选择其中的函数引用,根据data解构的参数执行方法
         role_dict[role](**data)
-        if orgType:
-            serializer = OrgTypeSerializer(instance=orgType)
+        if org_type:
+            serializer = OrgTypeSerializer(instance=org_type)
             return APIResponse(results=serializer.data)
         return APIResponse()
 
@@ -67,19 +67,11 @@ class OrgViews(APIView):
 
         if match == "org":
             org = OrgModel.objects.filter(pk=id).first()
-            users = org_service.findOrgMatchUser(org)
-            data = {
-                "users": users,
-                "org": org.org_name
-            }
+            data = org_service.find_org_match_user(org)
 
         else:
             user = UserModel.objects.filter(pk=id).first()
-            orgs = org_service.findUserMatchOrg(user)
-            data = {
-                "org": orgs,
-                "user": user.user_name
-            }
+            data = org_service.find_user_match_org(user)
 
         return APIResponse(results=data)
 
@@ -128,5 +120,3 @@ def file_iterator(file_name, chunk_size=1024):
                 yield chunk
             else:
                 break
-
-
