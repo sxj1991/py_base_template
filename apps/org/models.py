@@ -10,7 +10,7 @@ class OrgModel(models.Model):
     org_id = models.AutoField(primary_key=True, db_column="org_id")
     org_name = models.CharField(max_length=50)
     user_model = models.ManyToManyField(UserModel, through="UserOrgModel", through_fields=('orgs_id', 'users_id'))
-    org_type_id = models.ForeignKey('OrgTypeModel', on_delete=models.CASCADE, db_column="org_type_id")
+    types = models.ForeignKey('OrgTypeModel', on_delete=models.CASCADE, db_column="org_type_id")
 
     class Meta:
         default_related_name = "org_model"

@@ -26,19 +26,22 @@ class OrgViews(APIView):
 
         logger.info(msg=f"接收前端查询数据:request:{request.data}-id:{id}-role:{role}-")
         org_type = OrgTypeModel.objects.get(org_type_id=id)
-        role_dict = {
-            "default": self.__print_msg_default,
-            "admin": self.__print_msg_admin
-        }
-        data = {
-            "role": role
-        }
-        # 字典根据role传入值选择其中的函数引用,根据data解构的参数执行方法
-        role_dict[role](**data)
+        self.strategy_dict(role)
         if org_type:
             serializer = OrgTypeSerializer(instance=org_type)
             return APIResponse(results=serializer.data)
         return APIResponse()
+
+    def strategy_dict(self, role):
+        data = {
+            "role": role
+        }
+        role_dict = {
+            "default": self.__print_msg_default,
+            "admin": self.__print_msg_admin
+        }
+        # 字典根据role传入值选择其中的函数引用,根据data解构的参数执行方法
+        role_dict[role](**data)
 
     @classmethod
     def __print_msg_default(cls, role):

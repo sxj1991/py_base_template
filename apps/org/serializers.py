@@ -11,12 +11,13 @@ class OrgTypeSerializer(serializers.ModelSerializer):
 
     def get_org(self, obj):
         orgType = obj
-        types = OrgModel.objects.filter(org_type_id_id=orgType.org_type_id)
+        orgs = OrgModel.objects.filter(types_id=orgType.org_type_id)
         ret = []
-        for item in types:
+        for item in orgs:
+
             ret.append({"orgName": item.org_name})
         return ret
 
     class Meta:
         model = OrgModel
-        exclude = ['org_type_id', 'org_name', 'org_id']
+        exclude = ['types', 'org_name', 'org_id']
