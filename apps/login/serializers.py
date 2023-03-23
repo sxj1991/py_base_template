@@ -13,7 +13,6 @@ class UserSerializer(serializers.ModelSerializer):
     menu = serializers.SerializerMethodField()
     createTime = serializers.DateTimeField(source="create_time", required=False, format="%Y-%m-%d %H:%M:%S")
 
-
     def get_detail(self, obj):
         user = obj
         details = DetailModel.objects.filter(user_id=user.user_id)
