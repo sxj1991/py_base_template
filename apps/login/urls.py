@@ -9,7 +9,6 @@ urlpatterns = [
     re_path(r'^info/(?P<id>\d)/$', UserView.as_view()),
     # 用户信息
     re_path(r'^infos/$', UsersView.as_view()),
-
     # 用户登录 获取token
     re_path(r'^login/$', LoginView.as_view()),
 ]
